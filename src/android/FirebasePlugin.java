@@ -63,7 +63,7 @@ public class FirebasePlugin extends CordovaPlugin {
             public void run() {
                 Log.d(TAG, "Starting Firebase plugin");
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
-                mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+                mFirebaseAnalytics.setAnalyticsCollectionEnabled(true); //Default is true
                 if (extras != null && extras.size() > 1) {
                     if (FirebasePlugin.notificationStack == null) {
                         FirebasePlugin.notificationStack = new ArrayList<Bundle>();
@@ -151,6 +151,9 @@ public class FirebasePlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("verifyPhoneNumber")) {
             this.verifyPhoneNumber(callbackContext, args.getString(0), args.getInt(1));
+            return true;
+        }else if (action.equals("setEnabled")) {
+            setEnabled(callbackContext, args.getBoolean(0));
             return true;
         }
         return false;
@@ -394,6 +397,19 @@ public class FirebasePlugin extends CordovaPlugin {
             public void run() {
                 try {
                     mFirebaseAnalytics.logEvent(name, bundle);
+                    callbackContext.success();
+                } catch (Exception e) {
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void setEnabled(final CallbackContext callbackContext, final boolean enabled) throws JSONException {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    mFirebaseAnalytics.setAnalyticsCollectionEnabled(enabled);
                     callbackContext.success();
                 } catch (Exception e) {
                     callbackContext.error(e.getMessage());

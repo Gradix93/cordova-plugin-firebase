@@ -126,3 +126,7 @@ exports.setDefaults = function (defaults, namespace, success, error) {
 exports.verifyPhoneNumber = function(number, timeOutDuration, success, error) {
     exec(success, error, "FirebasePlugin", "verifyPhoneNumber", [number, timeOutDuration]);
 };
+
+exports.setEnabled = function(enabled, success, error) {
+    exec(success, error, "FirebasePlugin", "setEnabled", [enabled]);
+};
